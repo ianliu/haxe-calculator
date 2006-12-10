@@ -1,0 +1,21 @@
+﻿<haxe selected="0">
+  <output name="compile" mode="swf9" out="index.swf" class="Flash" lib="" cmd="" main="True" debug="False">-cp src/
+-swf-header 365:275:12:DDDDDD</output>
+  <files path="/">
+    <dir path="org">
+      <dir path="ianliu">
+        <file path="src\org\ianliu\ArrayTools.hx" />
+        <file path="src\org\ianliu\Container.hx" />
+        <file path="src\org\ianliu\FTextField.hx" />
+        <file path="src\org\ianliu\Grid.hx" />
+        <file path="src\org\ianliu\UIButton.hx" />
+        <file path="src\org\ianliu\UIComponent.hx" />
+        <file path="src\org\ianliu\UILabel.hx" />
+        <file path="src\org\ianliu\UIText.hx" />
+      </dir>
+    </dir>
+    <file path="src\Flash.hx" />
+    <file path="src\Parse.hx" />
+    <file path="src\ParseError.hx" />
+  </files>
+</haxe>
