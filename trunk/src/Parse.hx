@@ -48,14 +48,14 @@ class Parse
 		var r = expoente();
 		while( match(tok_exp, "*/") ) {
 			var c = tok_exp;
+			var p = pos;
 			getNextToken("[ mult ]");
 			var r2 = expoente();
 			switch( c ) {
 				case "*" : r *= r2;
 				case "/" :
 					if(r2 == 0) {
-						trace("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"+tok_beg+"  "+pos);
-						throw new ParseError(DivByZero, [tok_beg, pos]);
+						throw new ParseError(DivByZero, [p, pos]);
 					} else {
 						r /= r2;
 					}

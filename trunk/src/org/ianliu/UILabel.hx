@@ -10,13 +10,19 @@ class UILabel extends UIComponent
 	private var format:TextFormat;
 	private var txt:TextField;
 	
-	public function new(label:String, ?format:TextFormat) {
+	public function new(?label:String, ?width:Float, ?format:TextFormat) {
 		super();
 		this.format = if(format == null) new TextFormat("Verdana", 14) else format;
 		txt = new TextField();
 		txt.defaultTextFormat = this.format;
-		txt.text = label;
+		txt.text = if(label == null) " " else label;
 		txt.autoSize = "left";
+		if(width != null) {
+			var h = txt.height;
+			txt.autoSize = "none";
+			txt.width = width;
+			txt.height = h;
+		}
 		txt.selectable = false;
 		super.addChild(txt);
 	}

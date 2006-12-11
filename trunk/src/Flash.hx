@@ -15,6 +15,7 @@ import org.ianliu.UIComponent;
  */
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
 import flash.text.TextFormat;
 
@@ -95,9 +96,10 @@ class Flash
 	private var t3:UIText;
 	private var t4:UIText;
 	
-	// Aux variable to fix the text when pressing O/P keys
-	private var old:String;
-	private var ind:Int;
+	private var old:String; // Aux variable to fix the text when pressing O/P keys
+	private var ind:Int;    // Aux variable to determine the caret position in the text field
+	
+	private var error_label:UILabel;
 	
 	// Constructor
 	public function new()
@@ -105,25 +107,32 @@ class Flash
 		pane.scaleMode = flash.display.StageScaleMode.NO_SCALE;
 		pane.align = flash.display.StageAlign.TOP_LEFT;
 		
-		var raiz       = new Container();
+		var raiz       = new Container(null, true);
 		var cont       = new Container(new Grid(3, FixedCols), false, 0);
 		var teclado    = new Teclado(labelBtnHandle);
 		var operadores = new Operadores(labelBtnHandle);
 		var funcs      = new Funcs(funcBtnHandle);
+		var error_log  = new Container(null, true);
 		
 		cont.add(teclado);
 		cont.add(operadores);
 		cont.add(funcs);
 		
+		error_label = new UILabel(null, cont.width-raiz.padding-operadores.padding - 2);
+		error_log.add(error_label);
+		
 		var textos = new Container(new Grid(2, FixedCols), true);
 		var tf     = new TextFormat("Verdana", 14); tf.align = "center";
 		
-		textos.add(t4 = new UIText( cont.width - raiz.padding - operadores.padding, null, tf)); textos.add(new UILabel("A"));
-		textos.add(t3 = new UIText( cont.width - raiz.padding - operadores.padding, null, tf)); textos.add(new UILabel("B"));
-		textos.add(t2 = new UIText( cont.width - raiz.padding - operadores.padding, null, tf)); textos.add(new UILabel("C"));
-		textos.add(t1 = new UIText( cont.width - raiz.padding - operadores.padding, null, tf)); textos.add(new UILabel("D"));
+		var tmp = new UILabel("A");
+		var tmp_w = cont.width - raiz.padding - operadores.padding - tmp.width - textos.padding;
+		textos.add(t4 = new UIText( tmp_w, null, tf)); textos.add(tmp);
+		textos.add(t3 = new UIText( tmp_w, null, tf)); textos.add(new UILabel("B"));
+		textos.add(t2 = new UIText( tmp_w, null, tf)); textos.add(new UILabel("C"));
+		textos.add(t1 = new UIText( tmp_w, null, tf)); textos.add(new UILabel("D"));
 		
 		raiz.add(textos);
+		raiz.add(error_log);
 		raiz.add(cont);
 		pane.addChild(raiz);
 		
@@ -148,7 +157,18 @@ class Flash
 			pane.focus = t1.getTextField();
 			t1.getTextField().setSelection(i, i);
 		} catch( e:ParseError ) {
-			trace("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"+e+"  "+e.intervals);
+			error_label.setLabel("Error: " + e.message + " at [" + e.interval.toString() + "]");
+			t1.format.color = 0xff0000;
+			t1.format.bold  = true;
+			t1.getTextField().setTextFormat(t1.format, e.interval[0], e.interval[1]);
+			if(pane.focus == t1.getTextField()) pane.focus = pane;
+			var me = this;
+			t1.getTextField().addEventListener(FocusEvent.FOCUS_IN,
+				function(e:FocusEvent):Void {
+					me.t1.format.color = 0x00;
+					me.t1.format.bold  = false;
+					me.t1.getTextField().setTextFormat(me.t1.format);
+				});
 		}
 	}
 	/**
@@ -186,17 +206,16 @@ class Flash
 			cmpAll(c, [106, 107, 109, 110, 111, 187, 188, 189, 194]) ) { // Keys [0, 9], [a, z], {-=/*-+.,}
 			var t = t1.getTextField();
 			if( pane.focus != t ) pane.focus = t;
-			if( c == 79 || c == 80 ) { // f( O ) = '('   f( P ) = ')'
-				addFunc("", c-39);     // Keys 40 and 41 are parentheses
-				fix();
+			if( c == 79 || c == 80 ) {    // f( O ) = '('   f( P ) = ')'
+				addFunc("", c-39); fix(); // Keys 40 and 41 are parentheses
 			} else
-			if( c == 73 ) { // f( i ) = ^
+			if( c == 73 ) {               // f( i ) = ^
 				addLabel("^"); fix();
 			} else
-			if( c == 110 || c == 188 ) { // f( , ) = .
+			if( c == 110 || c == 188 ) {  // f( , ) = .
 				addLabel("."); fix();
 			} else
-			if( c == 187 ) {
+			if( c == 187 ) {              // f( = ) = +
 				addLabel("+"); fix();
 			}
 		}

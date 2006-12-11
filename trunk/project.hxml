@@ -1,0 +1,6 @@
+# compile
+-swf index.swf
+-swf-version 9
+-main Flash
+-cp src/
+-swf-header 346:310:12:DDDDDD
