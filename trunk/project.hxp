@@ -1,6 +1,6 @@
 ﻿<haxe selected="0">
   <output name="compile" mode="swf9" out="index.swf" class="Flash" lib="" cmd="" main="True" debug="False">-cp src/
--swf-header 365:275:12:DDDDDD</output>
+-swf-header 346:310:12:DDDDDD</output>
   <files path="/">
     <dir path="org">
       <dir path="ianliu">
@@ -12,6 +12,7 @@
         <file path="src\org\ianliu\UIComponent.hx" />
         <file path="src\org\ianliu\UILabel.hx" />
         <file path="src\org\ianliu\UIText.hx" />
+        <file path="src\org\ianliu\Util.hx" />
       </dir>
     </dir>
     <file path="src\Flash.hx" />

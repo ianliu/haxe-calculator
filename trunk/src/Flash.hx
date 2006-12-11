@@ -2,7 +2,7 @@
 /**
  * Importing UI components
  */
-
+import org.ianliu.Util;
 import org.ianliu.Grid;
 import org.ianliu.UIText;
 import org.ianliu.UILabel;
@@ -148,7 +148,7 @@ class Flash
 	public function parse(e:MouseEvent):Void {
 		var p;
 		try {
-			p = new Parse(t1.getText());
+			p = new Parse( Util.trimAll(t1.getText()) );
 			t4.setText(t3.getText());
 			t3.setText(t2.getText());
 			t2.setText(t1.getText());
@@ -203,7 +203,7 @@ class Flash
 			parse(null);
 		} else
 		if( (c >= 48 && c <= 90) || ( c >= 96 && c <= 105 ) ||
-			cmpAll(c, [106, 107, 109, 110, 111, 187, 188, 189, 194]) ) { // Keys [0, 9], [a, z], {-=/*-+.,}
+			cmpAll(c, [32, 106, 107, 109, 110, 111, 187, 188, 189, 194]) ) { // Keys [0, 9], [a, z], {-=/*-+.,}
 			var t = t1.getTextField();
 			if( pane.focus != t ) pane.focus = t;
 			if( c == 79 || c == 80 ) {    // f( O ) = '('   f( P ) = ')'
@@ -217,6 +217,9 @@ class Flash
 			} else
 			if( c == 187 ) {              // f( = ) = +
 				addLabel("+"); fix();
+			} else
+			if( c == 32 ) {               // espaço
+				addLabel(""); fix();
 			}
 		}
 	}
