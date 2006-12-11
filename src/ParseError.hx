@@ -8,14 +8,16 @@ enum ErrorType {
 class ParseError
 {
 	public var message  :String;
-	public var intervals:Array<Int>;
+	public var interval:Array<Int>;
+	public var errorType:ErrorType;
 	
-	public function new(errorType:ErrorType, intervals:Array<Int>) {
-		this.intervals = intervals;
-		message = switch( errorType ) {
+	public function new(errorType:ErrorType, interval:Array<Int>) {
+		this.interval = interval;
+		this.errorType = errorType;
+		this.message   = switch( errorType ) {
 			case Syntax : "Syntax error";
 			case DivByZero : "Division by zero";
-			case WrongParentheses : "Unmatched parentheses";
+			case WrongParentheses : "Missing parentheses";
 		}
 	}
 }
