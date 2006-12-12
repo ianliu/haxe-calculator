@@ -179,9 +179,9 @@ class Flash
 		var i = t.selectionBeginIndex;
 		var j = t.selectionEndIndex;
 		if(i != j) t.replaceSelectedText(label);
-		else t.text = t.text.substr(0, i) + label + t.text.substr(i);
+		else       t.text = t.text.substr(0, i) + label + t.text.substr(i);
+		ind = i+label.length;
 		old = t.text;
-		ind = j+1;
 	}
 	
 	public function addFunc(func:String, ?code:Int):Void {
@@ -238,6 +238,7 @@ class Flash
 	public function labelBtnHandle(e:MouseEvent):Void {
 		pane.focus = t1.getTextField();
 		addLabel(e.currentTarget.getLabel());
+		t1.getTextField().setSelection(ind, ind);
 	}
 	public function cmpAll( c:Int, a:Array<Int> ):Bool {
 		for(i in 0...a.length)
