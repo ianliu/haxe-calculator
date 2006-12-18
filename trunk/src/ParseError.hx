@@ -1,6 +1,9 @@
 
 enum ErrorType {
+	NoExp;
 	Syntax;
+	UknVar;
+	NullVar;
 	DivByZero;
 	WrongParentheses;
 }
@@ -15,7 +18,10 @@ class ParseError
 		this.interval = interval;
 		this.errorType = errorType;
 		this.message   = switch( errorType ) {
+			case NoExp : "Null expression";
 			case Syntax : "Syntax error";
+			case UknVar : "Unknown variable";
+			case NullVar : "Null variable";
 			case DivByZero : "Division by zero";
 			case WrongParentheses : "Missing parentheses";
 		}

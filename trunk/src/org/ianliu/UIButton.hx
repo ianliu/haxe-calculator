@@ -11,14 +11,15 @@ import flash.events.MouseEvent;
 import flash.text.TextFormat;
 import flash.text.TextFieldAutoSize;
 import flash.geom.Matrix;
-import org.ianliu.FTextField;
+
+import org.ianliu.UILabel;
 
 class UIButton extends org.ianliu.UIComponent
 {
 	private var gface  :Shape;
 	private var gpress :Shape;
 	private var ghit   :Sprite;
-	private var ftxt   :FTextField;
+	private var lbl    :UILabel;
 	
 	private var mainColor:Int;
 	private var lightColor:Int;
@@ -27,34 +28,37 @@ class UIButton extends org.ianliu.UIComponent
 	public function new(label:String, ?width:Float, ?height:Float, ?faceColor:Int, ?textFormat:TextFormat)
 	{
 		super();
-		makeText(label, textFormat);
-		if(width  == null) width  = Std.int(ftxt.width) + 5;
-		if(height == null) height = Std.int(ftxt.height) + 5;
-		locateText(width, height);
+		
+		gface  = new Shape();
+		gpress = new Shape();
+		ghit   = new Sprite();
+		lbl    = new UILabel(label);
+		
+		var w = if(width  == null) lbl.width  + 5 else width;
+		var h = if(height == null) lbl.height + 5 else height;
+		
+		locateText(w, h);
 		
 		makeColor(faceColor);
-		makeHit  (width, height);
-		makeFace (width, height);
-		makePress(width, height);
+		makeHit  (w, h);
+		makeFace (w, h);
+		makePress(w, h);
 		
 		gpress.visible = false;
 		
-		addEvents();
+		ghit.addEventListener(MouseEvent.MOUSE_UP  , mouseUp  );
+		ghit.addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
+		
 		this.addChild(gpress);
 		this.addChild(gface);
-		this.addChild(ftxt);
+		this.addChild(lbl);
 		this.addChild(ghit);
 	}
 	
-	public function resize(width:Int, height:Int):Void {
+	public function setSize(width:Float, height:Float):Void {
 		gface.width = ghit.width = gpress.width = width;
 		gface.height = ghit.height = gpress.height = height;
 		locateText(width, height);
-	}
-	
-	private function addEvents():Void {
-		ghit.addEventListener(MouseEvent.MOUSE_UP  , mouseUp  );
-		ghit.addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
 	}
 	
 	private function mouseDown(e:MouseEvent):Void {
@@ -85,25 +89,7 @@ class UIButton extends org.ianliu.UIComponent
 		borderColor = r << 16 | g << 8 | b;
 	}
 	
-	private function makeText(lbl:String, tf:TextFormat):Void {
-		ftxt = new FTextField(lbl);
-		ftxt.autoSize = TextFieldAutoSize.LEFT;
-		ftxt.selectable = false;
-		
-		if(tf != null) {
-			ftxt.format = tf;
-		} else {
-			var f:TextFormat = ftxt.format;
-			f.font = "Verdana";
-			f.size = 12;
-			f.color = 0x333333;
-		}
-		ftxt.setFormat();
-	}
-	
 	private function makeFace(w:Float, h:Float):Void {
-		gface = new Shape();
-		
 		var g:Graphics = gface.graphics;
 		var mtr:Matrix = new Matrix();
 		var fillType = GradientType.LINEAR;
@@ -119,10 +105,7 @@ class UIButton extends org.ianliu.UIComponent
 	}
 	
 	private function makePress(w:Float, h:Float):Void {
-		gpress = new Shape();
-		
 		var g:Graphics = gpress.graphics;
-		
 		g.lineStyle(1, borderColor, 1.0, false, LineScaleMode.NONE);
 		g.beginFill(mainColor);
 		g.drawRect(0, 0, w, h);
@@ -130,10 +113,7 @@ class UIButton extends org.ianliu.UIComponent
 	}
 	
 	private function makeHit(w:Float, h:Float):Void {
-		ghit = new Sprite();
-		
 		var g:Graphics = ghit.graphics;
-		
 		g.lineStyle(1, 0, 0.0, false, LineScaleMode.NONE);
 		g.beginFill(0, 0.0);
 		g.drawRect(0, 0, w, h);
@@ -142,11 +122,11 @@ class UIButton extends org.ianliu.UIComponent
 	}
 	
 	private function locateText(w:Float, h:Float):Void {
-		ftxt.x = (w - ftxt.width)/2;
-		ftxt.y = (h - ftxt.height)/2;
+		lbl.x = (w - lbl.width)/2;
+		lbl.y = (h - lbl.height)/2;
 	}
 	
-	public function getLabel()  :String {return ftxt.text;    }
+	public function getLabel() :String { return lbl.label; }
 }
 
 

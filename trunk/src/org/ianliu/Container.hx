@@ -38,16 +38,17 @@ class Container extends org.ianliu.UIComponent {
 			var h = innerHeight = this.height;
 			bdr.graphics.lineStyle(1, 0xffffff, 1, true);
 			bdr.graphics.beginFill(background);
-			bdr.graphics.drawRoundRect(1, 1, w+2*padding, h+2*padding, 10, 10);
+			bdr.graphics.drawRoundRect(1, 1, w+2*padding-1, h+2*padding-1, 10, 10);
 			bdr.graphics.endFill();
 			bdr.graphics.lineStyle(1, 0x787878, 1, true);
 			bdr.graphics.drawRoundRect(0, 0, w+2*padding, h+2*padding, 10, 10);
 		}
 	}
-	public function add(c:UIComponent):Void {
+	public function add(c:UIComponent):UIComponent {
 		addChild(c);
 		layout.add(c);
 		dispatchEvent(new Event(UIComponent.REFRESH, true));
+		return c;
 	}
 	public function remove(c:UIComponent):Void {
 		super.removeChild(c);

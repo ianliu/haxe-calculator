@@ -1,14 +1,19 @@
 
 /**
- * Importing UI components
- */
+	This is a scientific calculator made
+	in haXe by Ian Liu Rodrigues.
+	
+	Contact  : ian.liu88@gmail.com
+	Home Page: www.ianliu.art.br
+**/
+
 import org.ianliu.Util;
 import org.ianliu.Grid;
+import org.ianliu.UIFog;
 import org.ianliu.UIText;
 import org.ianliu.UILabel;
 import org.ianliu.UIButton;
 import org.ianliu.Container;
-import org.ianliu.UIComponent;
 
 /**
  * Import Events classes
@@ -20,67 +25,7 @@ import flash.events.KeyboardEvent;
 import flash.text.TextFormat;
 
 import flash.ui.Keyboard;
-
-/**
- * @class Teclado					- extends for Keyboard (portuguese)
- * @param f : MouseEvent -> Void	- function to be associated with the keyboards buttons
- * @usage new Teclado( function )
- */
-class Teclado extends Container {
-	public var igual:UIButton;
-	public function new(f:MouseEvent->Void) {
-		super(new Grid(3, FixedCols), true);
-		var b;
-		for(i in 0...9) {
-			b = new UIButton(Std.string(i+1), 30, 30);
-			b.addEventListener(MouseEvent.CLICK, f);
-			super.add(b);
-		}
-		b = new UIButton(".", 30, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("0", 30, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		igual = new UIButton("=", 30, 30); super.add(igual);
-	}
-}
-
-/**
- * @class Operadores				- extends for Operators (portuguese)
- * @param f : MouseEvent -> Void	- function to be associated with the operators buttons
- * @usage new Operadores( function )
- */
-class Operadores extends Container {
-	public function new(f:MouseEvent->Void) {
-		super(new Grid(4, FixedRows), true);
-		var b;
-		b = new UIButton("+", 30, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("-", 30, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("*", 30, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("/", 30, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("^", 30, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("(", 30, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton(")", 30, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-	}
-}
-
-/**
- * @class Funcs						- extends for functions
- * @param f : MouseEvent -> Void	- function to be associated with the function buttons
- * @usage new Funcs( function )
- */
-class Funcs extends Container {
-	public function new(f:MouseEvent->Void) {
-		super(new Grid(4, FixedRows), true);
-		var b;
-		b = new UIButton("ln"  , 40, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("foo" , 40, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("exp" , 40, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("sin" , 40, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("cos" , 40, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("tan" , 40, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("asin", 40, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("acos", 40, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-		b = new UIButton("atan", 40, 30); b.addEventListener(MouseEvent.CLICK, f); super.add(b);
-	}
-}
+import Gui;
 
 /**
  * Main Class
@@ -105,18 +50,21 @@ class Flash
 	public function new()
 	{
 		pane.scaleMode = flash.display.StageScaleMode.NO_SCALE;
-		pane.align = flash.display.StageAlign.TOP_LEFT;
 		
 		var raiz       = new Container(null, true);
-		var cont       = new Container(new Grid(3, FixedCols), false, 0);
+		var cont       = new Container(new Grid(1, FixedRows), false, 0);
 		var teclado    = new Teclado(labelBtnHandle);
 		var operadores = new Operadores(labelBtnHandle);
 		var funcs      = new Funcs(funcBtnHandle);
 		var error_log  = new Container(null, true);
+		var misc       = new Misc();
+		var funcPanel  = new AddFuncPanel();
+		var fog        = new UIFog(pane, funcPanel);
 		
 		cont.add(teclado);
 		cont.add(operadores);
 		cont.add(funcs);
+		cont.add(misc);
 		
 		error_label = new UILabel(null, cont.width-raiz.padding-operadores.padding - 2);
 		error_log.add(error_label);
@@ -124,12 +72,12 @@ class Flash
 		var textos = new Container(new Grid(2, FixedCols), true);
 		var tf     = new TextFormat("Verdana", 14); tf.align = "center";
 		
-		var tmp = new UILabel("A");
+		var tmp = new UILabel("C=");
 		var tmp_w = cont.width - raiz.padding - operadores.padding - tmp.width - textos.padding;
-		textos.add(t4 = new UIText( tmp_w, null, tf)); textos.add(tmp);
-		textos.add(t3 = new UIText( tmp_w, null, tf)); textos.add(new UILabel("B"));
-		textos.add(t2 = new UIText( tmp_w, null, tf)); textos.add(new UILabel("C"));
-		textos.add(t1 = new UIText( tmp_w, null, tf)); textos.add(new UILabel("D"));
+		textos.add(tmp);               textos.add( t4 = new UIText( tmp_w, null, tf) );
+		textos.add(new UILabel("B=")); textos.add( t3 = new UIText( tmp_w, null, tf) );
+		textos.add(new UILabel("A=")); textos.add( t2 = new UIText( tmp_w, null, tf) );
+		textos.add(t1 = new UIText( tmp_w + tmp.width + textos.layout.vgap, null, tf));
 		
 		raiz.add(textos);
 		raiz.add(error_log);
@@ -138,17 +86,29 @@ class Flash
 		
 		teclado.igual.addEventListener(MouseEvent.CLICK, parse);
 		pane.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyboard);
+		misc.add_function_btn.addEventListener(MouseEvent.CLICK,
+			function(e:MouseEvent):Void {
+				fog.show();
+			}
+		);
+		funcPanel._cancel.addEventListener(MouseEvent.CLICK,
+			function(e:MouseEvent):Void {
+				fog.remove();
+			}
+		);
 		
 		pane.focus = t1.getTextField();
 	}
+	
 	/**
 	 * Calculates the t1.text expression and pull all
 	 * other expressions to the upper text field
 	 */
 	public function parse(e:MouseEvent):Void {
-		var p;
+		var p, a;
 		try {
-			p = new Parse( Util.trimAll(t1.getText()) );
+			a = [t2.getText(), t3.getText(), t4.getText()];
+			p = new Parse( Util.trimAll(t1.getText()), a );
 			t4.setText(t3.getText());
 			t3.setText(t2.getText());
 			t2.setText(t1.getText());
