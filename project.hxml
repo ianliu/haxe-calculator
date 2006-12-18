@@ -3,4 +3,5 @@
 -swf-version 9
 -main Flash
 -cp src/
--swf-header 346:310:12:DDDDDD
+-swf-header 414:307:12:DDDDDD
+-lib swhx

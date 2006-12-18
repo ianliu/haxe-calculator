@@ -1,6 +1,7 @@
 ﻿<haxe selected="0">
   <output name="compile" mode="swf9" out="index.swf" class="Flash" lib="" cmd="" main="True" debug="False">-cp src/
--swf-header 346:310:12:DDDDDD</output>
+-swf-header 414:307:12:DDDDDD
+-lib swhx</output>
   <files path="/">
     <dir path="org">
       <dir path="ianliu">
@@ -16,7 +17,9 @@
       </dir>
     </dir>
     <file path="src\Flash.hx" />
+    <file path="src\Gui.hx" />
     <file path="src\Parse.hx" />
     <file path="src\ParseError.hx" />
+    <file path="src\Save.hx" />
   </files>
 </haxe>

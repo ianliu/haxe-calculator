@@ -7,6 +7,7 @@ enum Token {
 	Numero;
 	Funcao;
 	Operacao;
+	Variavel;
 	Parenteses;
 }
 
@@ -18,14 +19,17 @@ class Parse
 	public var tok_exp:String;
 	public var result:Float;
 	public var tok_beg:Int;
+	private var vars:Array<String>;
 	
-	public function new( e:String ) {
+	public function new( e:String, ?variables:Array<String> ) {
 		pos = 0;
 		exp = e;
 		tok = Nulo;
 		tok_beg = 0;
+		vars = variables;
 		
-		getNextToken("[ main ]");
+		getNextToken();
+		//if( tok_exp == "" ) throw new ParseError(NoExp, [0, 0]);
 		result = soma();
 		if( tok != Fim ) throw new ParseError(Syntax, [tok_beg, pos]);
 	}
@@ -34,7 +38,7 @@ class Parse
 		var r = multiplica();
 		while( match(tok_exp, "+-") ) {
 			var c = tok_exp;
-			getNextToken("[ soma ]");
+			getNextToken();
 			var r2 = multiplica();
 			switch( c ) {
 				case "+" : r += r2;
@@ -49,7 +53,7 @@ class Parse
 		while( match(tok_exp, "*/") ) {
 			var c = tok_exp;
 			var p = pos;
-			getNextToken("[ mult ]");
+			getNextToken();
 			var r2 = expoente();
 			switch( c ) {
 				case "*" : r *= r2;
@@ -67,7 +71,7 @@ class Parse
 	public function expoente():Float {
 		var r = unario();
 		while( tok_exp == "^" ) {
-			getNextToken("[ expo ]");
+			getNextToken();
 			var r2 = unario();
 			r = Math.pow(r, r2);
 		}
@@ -78,7 +82,7 @@ class Parse
 		var op = "";
 		if( tok == Operacao && match(tok_exp, "+-") ) {
 			op = tok_exp;
-			getNextToken("[unario]");
+			getNextToken();
 		}
 		var r = parenteses();
 		if(op == "-")
@@ -89,14 +93,14 @@ class Parse
 	public function parenteses():Float {
 		var r;
 		if( tok == Parenteses ) {
-			getNextToken("[   (  ]");
+			getNextToken();
 			r = soma();
 			if(tok != Parenteses) throw new ParseError(WrongParentheses, [tok_beg, pos]);
-			getNextToken("[   )  ]");
+			getNextToken();
 		} else
 		if( tok == Funcao ) {
 			var f = tok_exp;
-			getNextToken("[ func ]");
+			getNextToken();
 			var tmp = parenteses();
 			r = handleFunction( f, tmp );
 		} else {
@@ -109,11 +113,25 @@ class Parse
 		var r;
 		switch( tok ) {
 			case Numero   : r = Std.parseFloat( tok_exp );
-							getNextToken("[numero]");
+							getNextToken();
+			case Variavel : r = variavel();
+							getNextToken();
 			case Operacao : r = unario();
 			default       : throw new ParseError(Syntax, [tok_beg, pos]);
 		}
 		return r;
+	}
+	
+	public function variavel():Float {
+		var r:Float;
+		try switch( tok_exp ) {
+			case "a" : r = (new Parse(vars[0])).result;
+			case "b" : r = (new Parse(vars[1])).result;
+			case "c" : r = (new Parse(vars[2])).result;
+		} catch( e:ParseError )
+			throw new ParseError(NullVar, [tok_beg, pos]);
+		return r;
+		throw new ParseError(UknVar, [tok_beg, pos]);
 	}
 	
 	public function handleFunction(func:String, param:Float):Float {
@@ -130,7 +148,7 @@ class Parse
 		}
 	}
 	
-	public function getNextToken(?p:String):Int {
+	public function getNextToken():Int {
 		tok_exp = "";
 		if(pos == exp.length) {
 			tok = Fim;
@@ -141,9 +159,9 @@ class Parse
 			tok = Parenteses; pos++;
 		} else {
 			tok_beg = pos;
-			if( match(c, "0123456789.") ) {
+			if( match(c, "0123456789.e") ) {
 				tok_exp = c;
-				while(match(exp.charAt(++pos), "0123456789.")) {
+				while(match(exp.charAt(++pos), "0123456789.e")) {
 					tok_exp += exp.charAt(pos);
 				}
 				tok = Numero;
@@ -157,10 +175,9 @@ class Parse
 				while( isChar(exp.charAt(++pos)) ) {
 					tok_exp += exp.charAt(pos);
 				}
-				tok = Funcao;
+				tok = if(exp.charAt(pos) == "(") Funcao else Variavel;
 			}
 		}
-		toString(p);
 		return 0;
 	}
 	
@@ -175,16 +192,5 @@ class Parse
 		if( c >= 97 && c <= 122 )
 			return true;
 		return false;
-	}
-	
-	public function toString(?p:String):Void {
-		/*if(p==null) p="";
-		trace(
-			p + "\t"  +
-			"{pos: "  +pos+
-			", exp: " +exp+
-			", tok: " +tok+
-			", tok_exp: "+tok_exp+"}"
-		);*/
 	}
 }

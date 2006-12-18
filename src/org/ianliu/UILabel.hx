@@ -7,16 +7,21 @@ import flash.text.TextFormat;
 
 class UILabel extends UIComponent
 {
-	private var format:TextFormat;
+	public var label (default,null):String;
+	public var format(default,null):TextFormat;
+	
 	private var txt:TextField;
 	
 	public function new(?label:String, ?width:Float, ?format:TextFormat) {
 		super();
+		this.label  = label;
+		this.txt    = new TextField();
 		this.format = if(format == null) new TextFormat("Verdana", 14) else format;
-		txt = new TextField();
-		txt.defaultTextFormat = this.format;
-		txt.text = if(label == null) " " else label;
-		txt.autoSize = "left";
+		
+		this.txt.defaultTextFormat = this.format;
+		this.txt.text              = if(label == null) " " else label;
+		this.txt.autoSize          = "left";
+		
 		if(width != null) {
 			var h = txt.height;
 			txt.autoSize = "none";
@@ -26,9 +31,16 @@ class UILabel extends UIComponent
 		txt.selectable = false;
 		super.addChild(txt);
 	}
-	public function getLabel():String { return txt.text; }
-	public function setLabel(label:String):Void { txt.text = label; }
 	
-	public function getFormat():TextFormat { return format; }
+	/**
+		Setters
+	**/
+	public function setLabel (label:String)     :Void { txt.text = label; this.label = label; }
 	public function setFormat(format:TextFormat):Void { txt.defaultTextFormat = format; setLabel(getLabel()); }
+	
+	/**
+		Getters
+	**/
+	public function getLabel () :String     { return label;  }
+	public function getFormat() :TextFormat { return format; }
 }
