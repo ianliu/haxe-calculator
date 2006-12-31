@@ -29,7 +29,6 @@ class Parse
 		vars = variables;
 		
 		getNextToken();
-		//if( tok_exp == "" ) throw new ParseError(NoExp, [0, 0]);
 		result = soma();
 		if( tok != Fim ) throw new ParseError(Syntax, [tok_beg, pos]);
 	}
@@ -78,19 +77,19 @@ class Parse
 		return r;
 	}
 	
-	public function unario():Float {
+	public function unario(?flag:Bool):Float {
 		var op = "";
 		if( tok == Operacao && match(tok_exp, "+-") ) {
 			op = tok_exp;
 			getNextToken();
 		}
-		var r = parenteses();
+		var r = parenteses(flag);
 		if(op == "-")
 			return -r;
 		return r;
 	}
 	
-	public function parenteses():Float {
+	public function parenteses(?flag:Bool):Float {
 		var r;
 		if( tok == Parenteses ) {
 			getNextToken();
@@ -98,7 +97,7 @@ class Parse
 			if(tok != Parenteses) throw new ParseError(WrongParentheses, [tok_beg, pos]);
 			getNextToken();
 		} else
-		if( tok == Funcao ) {
+		if( flag == null && tok == Funcao ) {
 			var f = tok_exp;
 			getNextToken();
 			var tmp = parenteses();
@@ -159,9 +158,18 @@ class Parse
 			tok = Parenteses; pos++;
 		} else {
 			tok_beg = pos;
-			if( match(c, "0123456789.e") ) {
+			if( match(c, "0123456789.") ) {
 				tok_exp = c;
 				while(match(exp.charAt(++pos), "0123456789.e")) {
+					if(exp.charAt(pos) == "e") {
+						var tmp_exp = tok_exp;
+						pos++;
+						getNextToken();
+						var r = unario(true);
+						tok_exp = tmp_exp + "e" + r;
+						tok = Numero;
+						return 0;
+					}
 					tok_exp += exp.charAt(pos);
 				}
 				tok = Numero;
@@ -192,5 +200,9 @@ class Parse
 		if( c >= 97 && c <= 122 )
 			return true;
 		return false;
+	}
+	
+	public function say(x:Dynamic):Void {
+		trace("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"+x);
 	}
 }

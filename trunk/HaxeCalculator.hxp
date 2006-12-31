@@ -1,0 +1,16 @@
+﻿<haxe selected="1">
+  <output name="compila" mode="swf9" out="index.swf" class="Flash" lib="" cmd="" main="True" debug="False">-cp src
+-cp ../HaxeUI/src
+-swf-header 550:350:12:ffffff</output>
+  <output name="" mode="neko" out="index.n" class="Save" lib="" cmd="" main="True" debug="False">-cp src</output>
+  <files path="">
+    <dir path="src">
+      <file path="src\Flash.hx" />
+      <file path="src\Gui.hx" />
+      <file path="src\Parse.hx" />
+      <file path="src\ParseError.hx" />
+      <file path="src\Save.hx" />
+    </dir>
+    <file path="functions.xml" />
+  </files>
+</haxe>

@@ -11,7 +11,7 @@ enum ErrorType {
 class ParseError
 {
 	public var message  :String;
-	public var interval:Array<Int>;
+	public var interval :Array<Int>;
 	public var errorType:ErrorType;
 	
 	public function new(errorType:ErrorType, interval:Array<Int>) {
