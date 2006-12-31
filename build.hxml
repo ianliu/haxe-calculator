@@ -1,0 +1,8 @@
+# compile
+-cp ../HaxeUI/src/
+-swf index.swf
+-swf-version 9
+-main Flash
+-cp src/
+-swf-header 414:307:12:DDDDDD
+-lib swhx

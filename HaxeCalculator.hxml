@@ -1,0 +1,13 @@
+# compila
+-swf index.swf
+-swf-version 9
+-main Flash
+-cp src
+-cp ../HaxeUI/src
+-swf-header 550:350:12:ffffff
+
+--next
+# 
+-neko index.n
+-main Save
+-cp src
