@@ -1,0 +1,2 @@
+This project uses a simple UI architecture to make a sophisticated calculator in haXe language. It is designed to be an easy to use calculator in the day-by-day tasks, but also to make complex numerical calculus when needed.
+It is currently a work in progress project.
